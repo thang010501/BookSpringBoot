@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https//www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="utf-8">
+  <title>Bill Cart</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+  <style>
+    body{
+      background: rgb(228, 232, 224);
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav class="navbar navbar-expand-md navbar-dark"
+       style="background-color: rgb(181,105,232)">
+    <div>
+      <a th:href="@{/bookuser}" class="navbar-brand">Library's Books</a>
+    </div>
+    <ul class="navbar-nav">
+      <li th:if="${session.user}"><a th:href="@{/bookuser/bookcart}" class="nav-link">Giỏ hàng</a></li>
+    </ul>
+    <ul class="navbar-nav">
+      <li th:if="${session.user}"><a th:href="@{/bookuser/bookbill}" class="nav-link">Hóa đơn</a></li>
+    </ul>
+    <ul class="navbar-nav">
+      <li th:if="${session.user}"><a th:href="@{/log-out}" class="nav-link">Log out</a></li>
+    </ul>
+    </ul>
+  </nav>
+</header>
+<div class="container">
+  <br>
+  <div class="text-center">
+    <h1>List Cart Book</h1>
+  </div>
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+    <tr>
+      <th>Book Image</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Category</th>
+      <th>Number of Pages </th>
+      <th>Amount</th>
+      <th th:if="${session.user}">Action</th>
+    </tr>
+    </thead>
+
+    <tbody class="table-info">
+    <tr th:each="bookcart : ${bookcarts}">
+      <td><img  th:src="@{'/getimage/' + ${bookcart.getBook().getPhoto()}}" width="100" height="100"></td>
+      <td th:text="${bookcart.getBook().getTitle()}"></td>
+      <td th:text="${bookcart.getBook().getAuthor()}"></td>
+      <td th:text="${bookcart.getBook().getCategory()}"></td>
+      <td th:text="${bookcart.getBook().getPage()}"></td>
+      <td th:text="${bookcart.getSoluong()}"></td>
+      <td>
+        <div class="row">
+          &ensp;
+        <form th:action="@{/bookuser/detail/{id}(id = ${bookcart.getBook().getBookcode()})}" th:method="GET">
+          <button class="btn btn-success" style="float: right">View</button>
+        </form>
+          &ensp;
+          <form th:action="@{/bookuser/updateamount/{id}(id = ${bookcart.getBilldetailid()})}" th:method="GET">
+            <button class="btn btn-success" style="float: right">Amount</button>
+          </form>
+          &ensp;
+        <form th:action="@{/addbookcart/{id}(id=${bookcart.getBook().getBookcode()})}"  th:method="DELETE" onclick="return (confirm('Bạn có chắc muốn xóa không?'));">
+            <button class="btn btn-danger"  style="float: right">Delete</button>
+        </form>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div>
+    <form th:action="@{/orderbill}" th:method="POST">
+      <button class="btn btn-success" style="float: right">Order Bill</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

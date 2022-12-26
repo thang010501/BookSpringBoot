@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Book Edit</title>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+    h2 {
+      text-align: center;
+    }
+    body {
+      background: linear-gradient(to right, rgb(168, 166, 37), rgb(137, 212, 129)) fixed;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<main class="container">
+  <header class="row text-center">
+    <nav class="navbar navbar-expand-md navbar-dark"
+         style="background-color: rgb(22,195,218)">
+      <ul class="navbar-nav">
+        <li><a th:href="@{/bookuser}" class="nav-link">Back</a></li>
+      </ul>
+      </ul>
+    </nav>
+  </header>
+  <section class="row">
+    <div class="col mt-4">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h1 class="text-center">Book Detail</h1>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-7">
+                <div class="row">
+                  <div class="col-5">
+                      <label>Tiêu Đề:</label>
+                      <h4 th:text="${book.title}" ></h4>
+                  </div>
+                  <div class="col-5 ">
+                    <div class="form-group">
+                      <label>Tác Giả:</label>
+                      <h4 th:text="${book.author}"> </h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-col">
+                      <label>Thể loại:</label>
+                      <h4 th:text="${book.category}"></h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-10">
+                    <div class="form-col">
+                      <label>Mô Tả:</label>
+                      <p th:text="${book.mota}"></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-group">
+                      <label>Ngày phát hành:</label>
+                      <h6 th:text="${book.releasedate}"></h6>
+                    </div>
+                  </div>
+                  <div class="col-5">
+                    <div class="form-group">
+                      <label>Số trang:</label>
+                      <h6 th:text="${book.page}"></h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-group">
+                  <img id="thumbnail" width="350" height="350" th:src="@{'/getimage/' + ${book.photo}}" th:alt="${book.photo}">
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr style="height:1px;border:none;color:#333;background-color:#333;">
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

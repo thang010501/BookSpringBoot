@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https//www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="ISO-8859-1">
+  <title>Book List</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+  <style>
+    body{
+      background: rgb(228, 232, 224);
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav class="navbar navbar-expand-md navbar-dark"
+       style="background-color: rgb(181,105,232)">
+    <div>
+      <a th:href="@{/books}" class="navbar-brand">Library's Books</a>
+    </div>
+    <ul class="navbar-nav">
+      <li th:unless="${session.username}" ><a th:href="@{/loginuser}" class="nav-link">Login</a></li>
+    </ul>
+    <ul class="navbar-nav">
+      <li th:unless="${session.username}"><a th:href="@{/register}" class="nav-link">Sign Up</a></li>
+
+      <ul class="navbar-nav">
+        <li th:if="${session.username}"><a th:href="@{/log-out}" class="nav-link">Log out</a></li>
+      </ul>
+    </ul>
+  </nav>
+<!--  <label th:text="${session.username}"></label>-->
+</header>
+<div class="container">
+  <br>
+  <div class="text-center">
+    <h1>List Books</h1>
+  </div>
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+    <tr>
+      <th>Code Book</th>
+      <th>Book Image</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Category</th>
+      <th>Release Date</th>
+      <th>Number of Pages </th>
+      <th th:if="${session.username}">Action</th>
+    </tr>
+    </thead>
+
+    <tbody class="table-info">
+    <tr th:each="book: ${books}">
+      <td th:text="${book.bookcode}"></td>
+      <td><img  th:src="@{'getimage/' + ${book.photo}}" width="100" height="100"></td>
+      <td th:text="${book.title}"></td>
+      <td th:text="${book.author}"></td>
+      <td th:text="${book.category}"></td>
+      <td th:text="${book.releasedate}"></td>
+      <td th:text="${book.page}"></td>
+      <td th:if="${session.username}">
+        <a th:href="@{book/editBook/{id}(id = ${book.bookcode})}" class="btn btn-success">View</a>
+        <a th:href="@{book/delete/{id}(id = ${book.bookcode})}" class="btn btn-danger">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div th:if="${session.username}">
+    <a th:href="@{book/editBook/-1}" class="btn btn-success">New Book</a>
+  </div>
+  </div>
+</body>
+</html>

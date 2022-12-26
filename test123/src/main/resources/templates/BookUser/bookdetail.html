@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+  <title>Book Edit</title>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+    h2 {
+      text-align: center;
+    }
+    body {
+      background: linear-gradient(to right, rgb(168, 166, 37), rgb(137, 212, 129)) fixed;
+    }
+
+    .error {
+      color: red;
+    }
+    .comment {
+      border-top: 1px solid #ebf0f2;
+      margin: 1em 0;
+      padding-top: 1em;
+    }
+    .add-comment .button {
+      display: table;
+      margin: 1em 0;
+    }
+    .add-comment img {
+      width: 5em;
+    }
+    /*rating*/
+
+    .rating {
+      display: flex;
+      flex-direction: row-reverse;
+      float: left;
+      /*justify-content: center;*/
+    }
+
+    .rating > input{
+      display:none;
+    }
+
+    .rating > label {
+      position: relative;
+      width: 50px;
+      font-size: 50px;
+      color: #FFD700;
+      cursor: pointer;
+    }
+
+    .rating > label::before{
+      content: "\2605";
+      position: absolute;
+      opacity: 0;
+    }
+
+    .rating > label:hover:before,
+    .rating > label:hover ~ label:before {
+      opacity: 1 !important;
+    }
+
+    .rating > input:checked ~ label:before{
+      opacity:1;
+    }
+
+    .rating:hover > input:checked ~ label:before{
+      opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+<main class="container">
+  <header class="row text-center">
+    <nav class="navbar navbar-expand-md navbar-dark"
+         style="background-color: rgb(22,195,218)">
+      <ul class="navbar-nav">
+        <li><a th:href="@{/bookuser}" class="nav-link">Back</a></li>
+      </ul>
+      </ul>
+    </nav>
+  </header>
+  <section class="row">
+    <div class="col mt-4">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h1 class="text-center">Book Detail</h1>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-7">
+                <div class="row">
+                  <div class="col-5">
+                      <label>Tiêu Đề:</label>
+                      <h4 th:text="${book.title}" ></h4>
+                  </div>
+                  <div class="col-5 ">
+                    <div class="form-group">
+                      <label>Tác Giả:</label>
+                      <h4 th:text="${book.author}"> </h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-col">
+                      <label>Thể loại:</label>
+                      <h4 th:text="${book.category}"></h4>
+                    </div>
+                  </div>
+                  <div class="col-5">
+                    <div class="form-col">
+                      <label>Đánh giá:</label>
+                      <p th:if="${tbrate}">
+                      <img th:src="@{'/getimage/' + ${tbrate}} " alt="img">
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-10">
+                    <div class="form-col">
+                      <label>Mô Tả:</label>
+                      <p th:text="${book.mota}"></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-group">
+                      <label>Ngày phát hành:</label>
+                      <h6 th:text="${book.releasedate}"></h6>
+                    </div>
+                  </div>
+                  <div class="col-5">
+                    <div class="form-group">
+                      <label>Số trang:</label>
+                      <h6 th:text="${book.page}"></h6>
+                    </div>
+                  </div>
+                </div>
+                </br>
+              <div class="row" th:if="${session.user}">
+                <div class="col-5">
+                  <a th:href="@{/bookuser/addbookcart/{id}(id = ${book.bookcode})}" class="btn btn-success">Buy Book</a>
+                </div>
+                <div class="col-5">
+                  <a th:href="@{/bookuser/bookcart}" class="btn btn-success">View Giỏ Hàng</a>
+                </div>
+              </div>
+              </div>
+              <div class="col-3">
+                <div class="form-group">
+                  <img id="thumbnail" width="350" height="350" th:src="@{'/getimage/' + ${book.photo}}" th:alt="${book.photo}">
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr style="height:1px;border:none;color:#333;background-color:#333;">
+          <div class="row">
+            <div class="col-5">
+          <div class="card-header">
+            <h3>Comments</h3>
+          </div>
+          <section class="comment" th:each="comment: ${comments}">
+            <div class="row">
+              &ensp; &ensp;
+            <p>
+              <img th:src="@{'/getimage/account.png'}" width="25px" length="25px" class="avatar">
+            </p>
+              &ensp;
+            <p th:text="${comment.getUser().getEmail()}" ></p>
+              &ensp;|&ensp;
+            <p th:text="${comment.getTimecreate()}" ></p>
+            </div>
+            <div class="row">
+              &ensp; &ensp;
+              <p th:text="${comment.getContent()}"></p>
+              &ensp; &ensp;
+              <div th:switch="${comment.getUser().getEmail()}">
+               <p>
+                 <a th:case="${session.user}" th:href="@{/deletecomment/{id}(id = ${comment.getCommentid()})}">delete</a>
+               </p>
+              </div>
+            </div>
+            <p></p>
+          </section>
+            </div>
+            <div class="col-5">
+              <div class="card-header">
+                <h3>Rate</h3>
+              </div>
+              <section class="comment" th:each="rate: ${rates}">
+                <div class="row">
+                  &ensp; &ensp;
+                  <p>
+                    <img th:src="@{'/getimage/account.png'}" width="25px" length="25px" class="avatar">
+                  </p>
+                  &ensp;
+                  <p th:text="${rate.getUser().getEmail()}" ></p>
+                  &ensp;|&ensp;
+                  <p th:text="${rate.getTimerate()}" ></p>
+                  &ensp;
+                  <p>
+                  <img th:src="@{'/getimage/' + ${rate.getImgrate()}} " alt="img">
+                  </p>
+                  &ensp; &ensp;
+                  <div th:switch="${rate.getUser().getEmail()}">
+                    <p>
+                      <a th:case="${session.user}" th:href="@{/deleterate/{id}(id = ${rate.getRateid()})}">delete</a>
+                    </p>
+                  </div>
+                </div>
+              </section>
+            </div>
+            </div>
+          <br>
+          <section class="add-comment">
+            <div class="card-header">
+              <h2>Leave a comment</h2>
+            </div>
+              <br>
+              <div class="row">
+                <div class="col-5" >
+                  <form th:action="@{/bookuser/detail/comments/{id}(id=${book.bookcode})}" method="POST" th:if="${session.user}">
+                    <label>Comment:</label>
+              <textarea  name="comment" placeholder="Nhập comment" class="form-control" rows="5" ></textarea>
+                   <br> <button  type="submit" style="float:right" class="btn btn-success">Post Comment</button>
+                  </form>
+                </div>
+                <div class="col-5" style="margin-left: 150px">
+                  <label th:if="${session.user}">Đánh giá:</label>
+                  <form th:action="@{/bookuser/detail/rates/{id}(id=${book.bookcode})}" method="POST" th:if="${session.user}">
+<!--                  <select name="rate">-->
+<!--                    <option value="5">5 sao</option>-->
+<!--                    <option value="4">4 sao</option>-->
+<!--                    <option value="3">3 sao</option>-->
+<!--                    <option value="2">2 sao</option>-->
+<!--                    <option value="1">1 sao</option>-->
+<!--                  </select>-->
+                    &ensp; &ensp;<div class="rating">
+                      <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
+                      <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label>
+                      <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label>
+                      <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label>
+                      <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
+                  </div>
+                    <br><br><br><br>
+                    <input type="submit" value="Rate" class="btn btn-success">
+                  </form>
+                </div>
+              </div>
+              <hr style="height:1px;border:none;color:#333;background-color:#333;">
+          </section>
+        </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Count Book</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <style>
+        .head {
+            width: 500px;
+            margin-top: 150px;
+            border: 3px solid;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            background-color: #F9F9F9;
+        }
+
+        body {
+            background:linear-gradient(to right, rgb(238, 236, 157),rgb(206, 245, 238)) fixed;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container head">
+    <h1 class="text-center" style="font-size: 200%">Amount book?</h1>
+    <form th:object="${billDetail}" th:action="@{/updateamount/{id}(id=${billDetail.getBilldetailid()})}"  th:method="POST" class="text-center" name="From" onsubmit="return validateform()">
+        <input type="number" class="form-control"  placeholder="Nhập số lượng" name="amount"> <br><span id="erramount" style="color: red"></span></br>
+        <br>
+        <button type="submit" class="btn btn-danger">Update Amount</button>
+        <a th:href="@{/bookuser/bookcart}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+<script>
+    function validateform() {
+        var name = document.From.amount.value;
+        var temp = 0;
+        if(name == null || name == ""){
+            document.getElementById("erramount").innerHTML="ô số lượng không được để trống";
+            temp = 1;
+        }else {
+            if (name <= 0) {
+                document.getElementById("erramount").innerHTML = "số lượng không thể bé hơn 0";
+                temp = 1;
+            } else {
+                document.getElementById("erramount").innerHTML = "";
+            }
+        }
+        if(temp == 1){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
+</script>
+</body>
+</html>

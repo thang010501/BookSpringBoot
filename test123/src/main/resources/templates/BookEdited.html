@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Book Edit</title>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+    h2 {
+      text-align: center;
+    }
+    body {
+      background: linear-gradient(to right, rgb(168, 166, 37), rgb(137, 212, 129)) fixed;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<main class="container">
+  <header class="row text-center">
+    <nav class="navbar navbar-expand-md navbar-dark"
+         style="background-color: rgb(22,195,218)">
+      <ul class="navbar-nav">
+        <li><a th:href="@{/books}" class="nav-link">Back</a></li>
+      </ul>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="row">
+    <div class="col mt-4">
+      <form th:action="@{/edit/{id}(id=${book.bookcode})}"
+            th:object="${book}" th:method="${id} < 1 ? POST:PUT"
+            enctype="multipart/form-data">
+        <div class="card">
+          <div class="card-header">
+            <div th:if="${book.bookcode}">
+              <h1 class="text-center">Edit Book</h1>
+            </div>
+            <div th:unless="${book.bookcode}">
+              <h1 class="text-center">New Book</h1>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-7">
+
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-group">
+                      <label>Tiêu Đề</label> <input type="text"
+                                                    th:field="*{title}" class="form-control"
+                                                    placeholder="Nhập tiêu đề" disabled> <p th:if="${#fields.hasErrors('title')}" class="error" th:errors="*{title}" />
+                      <p th:text="${error}" class="error" style="color: red"></p>
+                    </div>
+                  </div>
+                  <div class="col-5 ">
+                    <div class="form-group">
+                      <label>Tác Giả:</label> <input type="text"
+                                                     th:field="*{author}" class="form-control"
+                                                     placeholder="Nhập tác giả" disabled> <p th:if="${#fields.hasErrors('author')}" class="error" th:errors="*{author}" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-10">
+                    <div class="form-col">
+                      <label>Mô Tả</label>
+                      <textarea th:field="*{mota}" placeholder="Nhập mô tả" class="form-control" rows="5" disabled></textarea>
+                      <p th:if="${#fields.hasErrors('mota')}" class="error" th:errors="*{mota}"></p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-group">
+                      <label>Ngày phát hành</label> <input type="date"
+                                                           th:field="*{releasedate}" class="form-control"
+                                                           placeholder="Chọn ngày phát hành" disabled> <p th:if="${#fields.hasErrors('releasedate')}" class="error"
+                                                                                                 th:errors="*{releasedate}" />
+                    </div>
+                  </div>
+                  <div class="col-5">
+                    <div class="form-group">
+                      <label>Số trang</label> <input type="number"
+                                                     th:field="*{page}" class="form-control"
+                                                     placeholder="Chọn số trang" disabled> <p th:if="${#fields.hasErrors('page')}" class="error"
+                                                                                     th:errors="*{page}" />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-col">
+                      <label>Thể loại</label>
+                      <select name="abc" id="abc-select" disabled>
+                        <option th:text="*{category}"></option>
+                        <option value="Kinh dị">Kinh dị</option>
+                        <option value="Thần thoại">Thần thoại</option>
+                        <option value="Học tập">Học tập</option>
+                        <option value="Chính trị">Chính trị</option>
+                        <option value="Tâm lý">Tâm lý</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-3">
+                <div th:if="${book.bookcode}">
+                  <select name="deleteimage" disabled>
+                    <option value="b">Không xóa</option>
+                    <option value="a">Xóa ảnh</option>
+                  </select>
+                </div>
+                <br>
+                <input type="file" name="image" id="fileImage" accept="image/png, image/jpeg" disabled>
+                <div class="form-group">
+                  <img id="thumbnail" width="350" height="350" th:src="@{'/getimage/' + ${book.photo}}" th:alt="${book.photo}">
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr style="height:1px;border:none;color:#333;background-color:#333;">
+          <div class="leftoff" th:if="${book.bookcode}">
+            <button type="submit" class="btn btn-success" id="submit" style="display: none; float: right">Save</button>
+            <button type="button" class="btn btn-primary" id="edit" onclick="enableInput()" style="display: block; float: right">Edit</button>
+            <!--      <a th:href="@{/books}" class="btn btn-secondary">Cancel</a>-->
+          </div>
+          <div class="leftoff" th:unless="${book.bookcode}">
+            <button type="submit" class="btn btn-success" id="newsubmit" style="display: none; float: right">Save</button>
+            <button type="button" class="btn btn-primary" id="new" onclick="enablenew()" style="display: block; float: right" >Add</button>
+            <!--      <a th:href="@{/books}" class="btn btn-secondary">Cancel</a>-->
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+<script>
+  fileImage.onchange = evt => {
+    const [file] = fileImage.files
+    if (file) {
+      thumbnail.src = URL.createObjectURL(file)
+    }
+
+  }
+
+  function enableInput() {
+    $("input").prop('disabled', false);
+    $("textarea").prop('disabled', false);
+    $("select").prop('disabled', false);
+    $("radio").prop('disabled', false);
+    document.getElementById("submit").style.display = 'block';
+    document.getElementById("edit").style.display = 'none';
+  }
+  function enablenew() {
+    $("input").prop('disabled', false);
+    $("textarea").prop('disabled', false);
+    $("select").prop('disabled', false);
+    document.getElementById("newsubmit").style.display = 'block';
+    document.getElementById("new").style.display = 'none';
+  }
+
+</script>
+</body>
+</html>
